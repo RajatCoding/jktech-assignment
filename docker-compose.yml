@@ -24,18 +24,22 @@ services:
     ports:
       - "8000:8000"
     environment:
-       DATABASE_URL: postgresql+asyncpg://bookuser:bookpass@db:5432/bookdb
-       OPENAI_API_KEY: ${OPENAI_API_KEY}
-       OPENAI_MODEL: gpt-4.1-mini
-       SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: postgresql+asyncpg://bookuser:bookpass@db:5432/bookdb
+      OPEN_ROUTER_API_KEY: ${OPEN_ROUTER_API_KEY}
+      LLM_MODEL: ${LLM_MODEL}
+      LLM_BASE_URL: ${LLM_BASE_URL}
+
+      # Auth config
+      SECRET_KEY: ${SECRET_KEY}
+      
     depends_on:
       db:
         condition: service_healthy
+
     volumes:
       - .:/app
+
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
   postgres_data:
-
-

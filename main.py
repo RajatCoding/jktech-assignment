@@ -16,7 +16,7 @@ from schemas import (
     RecommendationResponse, UserCreate, UserResponse,
     Token, UserLogin
 )
-from llama_service import gpt_service
+from llama_service import llama_service
 from auth import (
     get_password_hash, authenticate_user, create_access_token,
     get_current_active_user, get_current_admin_user, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -286,7 +286,7 @@ async def get_book_summary(book_id: int, db: AsyncSession = Depends(get_db)):
                 {"rating": r.rating, "review_text": r.review_text}
                 for r in reviews
             ]
-            review_summary = await gpt_service.generate_review_summary(reviews_data)
+            review_summary = await llama_service.generate_review_summary(reviews_data)
         except Exception as e:
             logger.error(f"Error generating review summary: {e}")
             review_summary = None
@@ -309,7 +309,7 @@ async def get_book_summary(book_id: int, db: AsyncSession = Depends(get_db)):
 async def generate_summary(request: GenerateSummaryRequest):
     """Generate a summary for given book content using Llama3."""
     try:
-        summary = await gpt_service.generate_summary(
+        summary = await llama_service.generate_summary(
             request.content,
             request.book_title,
             request.author
